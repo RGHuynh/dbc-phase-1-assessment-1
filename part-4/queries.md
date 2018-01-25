@@ -7,13 +7,24 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT name FROM players;
     ```
     
-    Result:
+    Result: 
   
     ```sql
-    < output here > 
+        Abby Wambach
+        Dez Bryant  
+        Hope Solo   
+        Jonathan Toe
+        Julie Johnst
+        Kerri Walsh 
+        Kyrie Irving
+        Lebron James
+        Misty May-Tr
+        Patrick Kane
+        Shannon Boxx
+        Tony Romo
     ```
   
 2.  Which team names include the word "Chicago"?
@@ -21,13 +32,14 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT name FROM teams WHERE name LIKE '%Chicago%';
     ```
     
     Result:
   
     ```sql
-    < output here > 
+    Chicago Blackhawks
+    Chicago Red Stars 
     ```
   
 3.  What are the titles of the positions on the team named "Chicago Blackhawks"?
@@ -35,13 +47,16 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT title, name FROM positions INNER JOIN teams ON teams.id = positions.team_id WHERE name = "Chicago Blackhawks";
     ```
     
     Result:
   
     ```sql
-    < output here > 
+        title       name              
+    ----------  ------------------
+    Right Wing  Chicago Blackhawks
+    Center      Chicago Blackhawks
     ```
   
 4.  What are the names of the teams Shannon Boxx plays for?
@@ -49,13 +64,16 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT teams.name, players.name FROM positions INNER JOIN teams ON teams.id = positions.team_id INNER JOIN players ON players.id = positions.player_id WHERE players.name = 'Shannon Boxx';
     ```
     
     Result:
   
     ```sql
-    < output here > 
+        name                           name        
+    -----------------------------  ------------
+    United States National Soccer  Shannon Boxx
+    Chicago Red Stars              Shannon Boxx
     ```
   
 5.  What are the names of the players who play soccer? (Each name should be listed once; no repeats.)
@@ -63,13 +81,28 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT DISTINCT
+    players.name,
+    teams.sport
+    FROM
+    positions
+    INNER JOIN
+    teams ON teams.id = positions.team_id
+    INNER JOIN
+    players ON players.id = positions.player_id
+    WHERE
+    teams.sport = 'Soccer';
     ```
     
     Result:
   
     ```sql
-    < output here > 
+    name          sport     
+    ------------  ----------
+    Shannon Boxx  Soccer    
+    Hope Solo     Soccer    
+    Abby Wambach  Soccer    
+    Julie Johnst  Soccer   
     ```
   
 6.  What is the name of the team with the most players, and how many players does it have?
@@ -77,13 +110,27 @@ Record your queries and any resulting output below.
     Query:
   
     ```sql
-    < your query here >
+    SELECT
+    teams.name,
+    count(player_id)
+    FROM positions
+    INNER JOIN
+    teams ON teams.id = positions.team_id
+    GROUP BY
+    teams.name
+    ORDER BY
+    count(player_id) desc
+    LIMIT 1;
+
+
     ```
     
     Result:
   
     ```sql
-    < output here > 
+        name                           count(player_id)
+    -----------------------------  ----------------
+    United States National Soccer  4              
     ```
   
 
@@ -93,7 +140,12 @@ Record your queries and any resulting output below.
     Statements run:
   
     ```sql
-    < your SQL statements here >
+    UPDATE positions
+    SET jersey_number = 99,
+    title = "Center"
+    WHERE
+    positions.id = (SELECT players.id FROM players WHERE name = "Kevin Solorio");
+
     ```
 
 2.  The team named "Oakland Raiders" is moving to a new city.  It's new name is "Las Vegas Raiders".  Update the database to reflect this.
@@ -101,7 +153,10 @@ Record your queries and any resulting output below.
     Statements run:
   
     ```sql
-    < your SQL statements here >
+    UPDATE teams
+    SET name = "Las Vegas Raiders"
+    WHERE 
+    name = "Oakland Raiders";
     ```
 
 3.  The player named "Tony Romo" has retired.  Remove this player and their positions from the database.
@@ -109,5 +164,15 @@ Record your queries and any resulting output below.
     Statements run:
   
     ```sql
-    < your SQL statements here >
+    DELETE 
+    FROM 
+    positions
+    WHERE
+    positions.id = (SELECT players.id FROM players WHERE name = "Tony Romo" );
+
+    DELETE 
+    FROM
+    players
+    WHERE
+    name = "Tony Romo"; 
     ```
