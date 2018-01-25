@@ -1,4 +1,7 @@
+require_relative 'storage'
 class Library
+
+  include Storage
   attr_reader :name, :location, :library_system, :items
 
   def initialize(args = {})

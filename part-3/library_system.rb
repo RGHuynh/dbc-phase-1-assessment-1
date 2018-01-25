@@ -17,4 +17,9 @@ class LibrarySystem
   def unavailable_items
     libraries.flat_map(&:unavailable_items)
   end
+
+  def finding_items(item)
+    libraries.flat_map(item)
+  end
+
 end
